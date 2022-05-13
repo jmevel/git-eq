@@ -1,0 +1,14 @@
+[package]
+name = "git-eq"
+version = "0.1.0"
+authors = ["Jérôme MEVEL <jeromemevel@hotmail.com>"]
+edition = "2021"
+description = "A git command to quickly save your local changes in case of earthquake !"
+repository = "https://github.com/jmevel/git-eq"
+homepage = "https://github.com/jmevel/git-eq"
+license = "MIT"
+readme = "README.md"
+keywords = ["git", "earthquake"]
+categories = ["command-line-utilities"]
+
+[dependencies]
