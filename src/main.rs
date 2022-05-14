@@ -26,6 +26,6 @@ use git_eq::{config::Config, earthquake_procedure};
 fn main() -> Result<(), Box<dyn Error>> {
     let config = Config::new(env::args());
     earthquake_procedure(config)?;
-    println!("Local changes saved, now go hide in a corner!!! (don't stay in the middle of the room)");
+    println!("\r\nLocal changes saved, now go hide in a corner!!! (don't stay in the middle of the room)\r\n");
     Ok(())
 }

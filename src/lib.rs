@@ -44,26 +44,25 @@ fn current_unix_epoch() -> Result<u64, SystemTimeError> {
 }
 
 fn checkout(branch_name: &str) -> Result<(), Box<dyn Error>> {
-    wait_git_lock_released()?;
-    Command::new("git").args(&["checkout", "-b", branch_name]).spawn()?;
-    Ok(())
+    execute_git_command(&["checkout", "-b", branch_name])
 }
 
 fn add() -> Result<(), Box<dyn Error>> {
-    wait_git_lock_released()?;
-    Command::new("git").args(&["add", "--all"]).spawn()?;
-    Ok(())
+    execute_git_command(&["add", "--all"])
 }
 
 fn commit(message: &str) -> Result<(), Box<dyn Error>> {
-    wait_git_lock_released()?;
-    Command::new("git").args(&["commit", "-m", message]).spawn()?;
-    Ok(())
+    execute_git_command(&["commit", "-m", message])
 }
 
 fn push(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    execute_git_command(&["push", "-u", "origin", branch_name])
+}
+
+fn execute_git_command(args: &[&str]) -> Result<(), Box<dyn Error>> {
     wait_git_lock_released()?;
-    Command::new("git").args(&["push", "-u", "origin", branch_name]).spawn()?;
+    let mut child = Command::new("git").args(args).spawn()?;
+    child.wait()?;
     Ok(())
 }
 
