@@ -1,8 +1,9 @@
-use std::{process::{Command, Output}, error::Error, time::{SystemTime, SystemTimeError}, fs, path::Path};
+use std::{process::{Command, Output}, error::Error, time::{SystemTime, SystemTimeError}, path::Path};
 
 use config::Config;
 
 pub mod config;
+mod file_watcher;
 
 /// To run the earthquake procedure
 pub fn earthquake_procedure(config: Config) -> Result<(), Box<dyn Error>> {
@@ -43,35 +44,36 @@ fn current_unix_epoch() -> Result<u64, SystemTimeError> {
 }
 
 fn checkout(branch_name: &str) -> Result<(), Box<dyn Error>> {
-    delete_index_lock()?;
+    wait_git_lock_released()?;
     Command::new("git").args(&["checkout", "-b", branch_name]).spawn()?;
     Ok(())
 }
 
 fn add() -> Result<(), Box<dyn Error>> {
-    delete_index_lock()?;
+    wait_git_lock_released()?;
     Command::new("git").args(&["add", "--all"]).spawn()?;
     Ok(())
 }
 
 fn commit(message: &str) -> Result<(), Box<dyn Error>> {
-    delete_index_lock()?;
+    wait_git_lock_released()?;
     Command::new("git").args(&["commit", "-m", message]).spawn()?;
     Ok(())
 }
 
 fn push() -> Result<(), Box<dyn Error>> {
-    delete_index_lock()?;
+    wait_git_lock_released()?;
     Command::new("git").arg("push").spawn()?;
     Ok(())
 }
 
-fn delete_index_lock() -> Result<(), Box<dyn Error>> {
+fn wait_git_lock_released() -> Result<(), Box<dyn Error>> {
     let output = Command::new("git").args(&["rev-parse", "--show-toplevel"]).output()?;
     let git_root_directory = read_git_info(output)?;
     let lock_path = Path::new(&git_root_directory).join(".git/index.lock");
+
     if lock_path.exists() {
-        fs::remove_file(lock_path)?;
+        file_watcher::wait_until_deleted(&lock_path);
     }
     Ok(())
 }
