@@ -25,5 +25,7 @@ use git_eq::{config::Config, earthquake_procedure};
 /// If no message is provided, the default `Earthquake!!! This is an emergency commit` message is used
 fn main() -> Result<(), Box<dyn Error>> {
     let config = Config::new(env::args());
-    earthquake_procedure(config)
+    earthquake_procedure(config)?;
+    println!("Local changes saved, now go hide in a corner!!! (don't stay in the middle of the room)");
+    Ok(())
 }

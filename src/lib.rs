@@ -17,7 +17,7 @@ pub fn earthquake_procedure(config: Config) -> Result<(), Box<dyn Error>> {
         add()?;
         commit(&config.commit_message)?;
     }
-    push()?;
+    push(&branch_name)?;
 
     Ok(())
 }
@@ -61,9 +61,9 @@ fn commit(message: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn push() -> Result<(), Box<dyn Error>> {
+fn push(branch_name: &str) -> Result<(), Box<dyn Error>> {
     wait_git_lock_released()?;
-    Command::new("git").arg("push").spawn()?;
+    Command::new("git").args(&["push", "-u", "origin", branch_name]).spawn()?;
     Ok(())
 }
 

@@ -10,7 +10,7 @@ This project is heavily inspired by [git-fire](https://github.com/qw3rtman/git-f
 2. If there are some uncommited changes
    1. `Add` all those files (even if you're not in the root directory)
    2. `Commit` with either the default message or the provided one
-3. `Push`
+3. `Push` to `origin`
 
 ## Installation
 
