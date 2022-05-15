@@ -10,7 +10,7 @@
 //! 2. If there are some uncommited changes
 //!    1. `Add` all those files (even if you're not in the root directory)
 //!    2. `Commit` with either the default message or the provided one
-//! 3. `Push`
+//! 3. `Push` to the remote of your branch (most commonly `origin` but not necessary)
 
 use anyhow::Result;
 use std::env;
