@@ -12,7 +12,8 @@
 //!    2. `Commit` with either the default message or the provided one
 //! 3. `Push`
 
-use std::{env, error::Error};
+use anyhow::Result;
+use std::env;
 
 use git_eq::{config::Config, earthquake_procedure};
 
@@ -23,7 +24,7 @@ use git_eq::{config::Config, earthquake_procedure};
 /// git eq "My custom message"
 /// ```
 /// If no message is provided, the default `Earthquake!!! This is an emergency commit` message is used
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     let (config, warning) = Config::new(env::args());
     match warning {
         Some(message) => println!("{message}"),
