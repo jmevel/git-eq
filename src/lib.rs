@@ -38,12 +38,20 @@ fn current_branch() -> Result<String> {
 }
 
 fn user_email() -> Result<String> {
-    output_git_command(&["config", "--get", "user.email"])
+    let output = output_git_command(&["config", "--get", "user.email"])?;
+    if output.is_empty() {
+        return Err(anyhow::Error::msg("No user email is configured"));
+    }
+    Ok(output)
 }
 
 fn remote(branch_name: &str) -> Result<String> {
     let config_path = format!("branch.{branch_name}.remote");
-    output_git_command(&["config", "--get", &config_path])
+    let output = output_git_command(&["config", "--get", &config_path])?;
+    if output.is_empty() {
+        return Err(anyhow::Error::msg("No remote branch is configured"));
+    }
+    Ok(output)
 }
 
 fn current_unix_epoch() -> Result<u64, SystemTimeError> {
