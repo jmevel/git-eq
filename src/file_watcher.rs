@@ -1,6 +1,4 @@
-extern crate notify;
-
-use notify::{Watcher, RecursiveMode, watcher, DebouncedEvent};
+use notify::{watcher, DebouncedEvent, RecursiveMode, Watcher};
 use std::path::Path;
 use std::sync::mpsc::channel;
 use std::time::Duration;
@@ -15,24 +13,18 @@ pub fn wait_until_deleted(path: &Path) {
     // The notification back-end is selected based on the platform.
     let mut watcher = watcher(tx, Duration::from_secs(10)).unwrap();
 
-    // Add a path to be watched. All files and directories at that path and
-    // below will be monitored for changes.
-    //watcher.watch(path, RecursiveMode::Recursive).unwrap();
-    let watch_success = match watcher.watch(path, RecursiveMode::Recursive) {
-        Ok(()) => true,
-        Err(_) => return
+    // Add a path to be watched.
+    // All files and directories at that path and below will be monitored for changes.
+    match watcher.watch(path, RecursiveMode::Recursive) {
+        Ok(()) => {}
+        Err(_) => return,
     };
 
-    if watch_success {
-        loop {
-            match rx.recv() {
-                Ok(event) => {
-                    if let DebouncedEvent::NoticeRemove(_) = event {
-                        return;
-                    }
-                },
-                Err(_) => return,
-            }
+    loop {
+        match rx.recv() {
+            Ok(DebouncedEvent::NoticeRemove(_)) => return,
+            Err(_) => return,
+            Ok(_) => {} // Any other event than 'delete' is ignored
         }
     }
 }
